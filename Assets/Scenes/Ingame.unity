@@ -264,7 +264,7 @@ MonoBehaviour:
   y: 10
   space: 54
   txtScore: {fileID: 70622592}
-  popupPause: {fileID: 2073690089}
+  popupPause: {fileID: 0}
 --- !u!1 &110117689
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2073690089}
+      - m_Target: {fileID: 0}
         m_MethodName: OnClick_ToMainMenu
         m_Mode: 1
         m_Arguments:
@@ -1372,7 +1372,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2073690089}
+      - m_Target: {fileID: 0}
         m_MethodName: OnClick_Replay
         m_Mode: 1
         m_Arguments:
@@ -1545,10 +1545,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2073690088}
-  - component: {fileID: 2073690089}
   - component: {fileID: 2073690091}
+  - component: {fileID: 2073690089}
   m_Layer: 0
-  m_Name: PopupPause
+  m_Name: PopupGameOver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1585,7 +1585,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2073690087}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e7a0610c2d3c234bbeb9f46940fadf5, type: 3}
+  m_Script: {fileID: 11500000, guid: 072d9934e03fa8048b26648c69b5445b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   trApple: {fileID: 1579301487}
