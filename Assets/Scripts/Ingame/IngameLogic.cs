@@ -29,11 +29,11 @@ public class IngameLogic : MonoBehaviour
             int sum = selectedAppleList.Sum(apple => apple.number);
             if(sum == SATISFY_TOTAL_SUM)
             {
-                selectedAppleList.ForEach(apple => apple.gameObject.SetActive(false));
+                selectedAppleList.ForEach(apple => apple.Terminate());
                 score += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
                     score += 10;
-                txtScore.text = score.ToString();
+                txtScore.Set(score);
             }
         });
         GenerateApples();
