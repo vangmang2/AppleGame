@@ -10,7 +10,8 @@ public class IngameLogic : MonoBehaviour
 {
     public static bool isGameOver = false;
     const int SATISFY_TOTAL_SUM = 10;
-    const float LIMIT_TIME = 5;
+    const float LIMIT_TIME = 60;
+
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
     [SerializeField] Transform trStage;
