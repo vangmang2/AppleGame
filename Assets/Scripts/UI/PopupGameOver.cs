@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,11 +22,11 @@ public class PopupGameOver : MonoBehaviour
 
     public void OnClick_Replay()
     {
-
+        SceneManager.LoadScene(1/*IngameScene*/);
     }
 
     public void OnClick_ToMainMenu()
     {
-
+        SceneManager.LoadScene(0/*OutgameScene*/);
     }
 }
