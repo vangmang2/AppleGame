@@ -46,7 +46,6 @@ public class IngameLogic : MonoBehaviour
 
     private void GenerateApples()
     {
-        int count = 0;
         var offSet = new Vector2(x, -y) * 0.5f * space;
         appleArray = new UIItemApple[x, y];
 
@@ -64,7 +63,7 @@ public class IngameLogic : MonoBehaviour
         }
     }
 
-    public void FindAvailableTotal()
+    public void Onclick_FindAvailableTotal()
     {
         avaliableAppleList.Clear();
         for (int _y = 0; _y < y; _y++)
@@ -143,10 +142,14 @@ public class IngameLogic : MonoBehaviour
         }
     }
 
+    Coroutine coroutine;
     // 10의 합이 가능한 사과들을 하이라이트 효과처리함
-    public void HighlightAvaliableApples()
-    {        
-        rtHint.gameObject.SetActive(true);
+    private void HighlightAvaliableApples()
+    {
+        if (coroutine != null)
+            StopCoroutine(coroutine);
+        coroutine = StartCoroutine(CoPlayHighlightHint());
+
         var firstApple = avaliableAppleList[0];
         var secondApple = avaliableAppleList[avaliableAppleList.Count - 1];
 
@@ -165,6 +168,20 @@ public class IngameLogic : MonoBehaviour
         avaliableAppleList.Clear();
     }
 
+    private IEnumerator CoPlayHighlightHint()
+    {
+        rtHint.gameObject.SetActive(true);
+        var t = 0f;
+        var duration = 2f;
+
+        while (t <= duration)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+        rtHint.gameObject.SetActive(false);
+    }
+
     float passedTime = 0f;
     void Update()
     {
@@ -179,7 +196,7 @@ public class IngameLogic : MonoBehaviour
                       .ShowPopup();
         }
 
-        InputHandler.HandleKeyboardInput(KeyCode.Q, KeyInput.keyDown, FindAvailableTotal);
+        //InputHandler.HandleKeyboardInput(KeyCode.Q, KeyInput.keyDown, Onclick_FindAvailableTotal);
     }
 
 
