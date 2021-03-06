@@ -71,10 +71,12 @@ public class IngameLogic : MonoBehaviour
         {
             for (int _x = 0; _x < x; _x++)
             {
-                var itemApple = appleArray[_x, _y];
-                
-                // 1) 현재 선택된 사과의 상하좌우 를 먼저 검사한다.
                 if (SearchVertical(_x, _y))
+                {
+                    HighlightAvaliableApples();
+                    return;
+                }
+                if (SearchHorizontal(_x, _y))
                 {
                     HighlightAvaliableApples();
                     return;
@@ -110,6 +112,35 @@ public class IngameLogic : MonoBehaviour
             }
             return false;
         }
+
+        bool SearchHorizontal(int x, int y)
+        {
+            int minX = 0;
+            if (x == minX)
+                return false;
+            int idx = x;
+
+            while(idx > minX)
+            {
+                idx--;
+                var sum = 0;
+                for(int i = x; i >= idx; i--)
+                {
+                    var apple = appleArray[i, y];
+                    if (!apple.isTerminated)
+                        sum += apple.number;
+                }
+                if (sum == 10)
+                {
+                    for (int i = x; i >= idx; i--)
+                        avaliableAppleList.Add(appleArray[i, y]);
+                    return true;
+                }
+                else if (sum > 10)
+                    return false;
+            }
+            return false;
+        }
     }
 
     // 10의 합이 가능한 사과들을 하이라이트 효과처리함
@@ -118,7 +149,6 @@ public class IngameLogic : MonoBehaviour
         rtHint.gameObject.SetActive(true);
         var firstApple = avaliableAppleList[0];
         var secondApple = avaliableAppleList[avaliableAppleList.Count - 1];
-        //Debug.Log($"FirstApple(x:{(int)firstApple.index.x} y:{firstApple.index.y}) SecondApple(x:{(int)secondApple.index.x} y:{secondApple.index.y}) ");
 
         int xAxisLength = (int)Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
         int yAxisLength = (int)Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
