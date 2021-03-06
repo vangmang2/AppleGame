@@ -11,7 +11,9 @@ public class UIItemApple : MonoBehaviour
     [SerializeField] Image imageSelection;
     [SerializeField] Image imageBg;
     [SerializeField] Text txtNumber;
-    public int id { get; private set; }
+    public bool isTerminated { get; private set; }
+
+    public int id;// { get; private set; }
     public int number { get; private set; }
 
     public UIItemApple SetLocalPosition(Vector2 position)
@@ -56,6 +58,7 @@ public class UIItemApple : MonoBehaviour
 
     public void Terminate()
     {
+        isTerminated = true;
         collider2D.enabled = false;
         StartCoroutine(CoPlayTerminationAnim());
     }

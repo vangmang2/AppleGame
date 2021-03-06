@@ -21,9 +21,11 @@ public class IngameLogic : MonoBehaviour
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
     int score;
+    UIItemApple[,] appleArray;
 
     void Start()
     {
+        isGameOver = false;
         ingameInputHandler.SetCheckSumAction((selectedAppleList) =>
         {
             int sum = selectedAppleList.Sum(apple => apple.number);
@@ -42,22 +44,38 @@ public class IngameLogic : MonoBehaviour
     private void GenerateApples()
     {
         int count = 0;
-        var offSet = new Vector2(x, y) * 0.5f * space;
-        for (int i = 0; i < x; i++)
+        var offSet = new Vector2(x, -y) * 0.5f * space;
+        appleArray = new UIItemApple[x, y];
+
+        for (int _y = 0; _y < y; _y++)
         {
-            for (int j = 0; j < y; j++)
+            for (int _x = 0; _x < x; _x++)
             {
                 var itemApple = Instantiate(applePrefab, trStage);
                 itemApple.SetID(++count)
-                         .SetLocalPosition(offSet - new Vector2(i + 0.5f, j + 0.5f) * space)
+                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet)
                          .SetNumber(Random.Range(1, 10));
+                appleArray[_x, _y] = itemApple;
             }
         }
     }
 
+    public void FindAvailableTotal()
+    {
+        for (int _y = 0; _y < y; _y++)
+        {
+            for (int _x = 0; _x < x; _x++)
+            {
+                var itemApple = appleArray[_x, _y];
+            }
+        }
+    }
+
+    float passedTime = 0f;
     void Update()
     {
-        float time = Mathf.Max(LIMIT_TIME - Time.realtimeSinceStartup, 0f);
+        passedTime += Time.deltaTime;
+        float time = Mathf.Max(LIMIT_TIME - passedTime, 0f);
         leftTimeProgressBar.SetFill(time / LIMIT_TIME);
 
         if(time <= 0f && !isGameOver)
