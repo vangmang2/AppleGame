@@ -17,18 +17,24 @@ public class IngameLogic : MonoBehaviour
     [SerializeField] Transform trStage;
     [SerializeField] UIItemApple applePrefab;
     [SerializeField] int x, y;
-    [SerializeField] float space;
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
-    [SerializeField] RectTransform rtHint;
-    int score;
-    UIItemApple[,] appleArray;
+    [SerializeField] RectTransform rtHint, rtStage;
+
     readonly List<UIItemApple> avaliableAppleList = new List<UIItemApple>();
 
+    int score;
+    UIItemApple[,] appleArray;
+    float space;
+    float cellSize;
 
     void Start()
     {
         isGameOver = false;
+        var stageSize = new Vector2(Screen.width, Screen.height) + rtStage.sizeDelta;
+        cellSize = Mathf.Min(stageSize.x / x, stageSize.y / y) - 10f;
+        space = cellSize + 10;
+
         ingameInputHandler.SetCheckSumAction((selectedAppleList) =>
         {
             int sum = selectedAppleList.Sum(apple => apple.number);
@@ -57,6 +63,7 @@ public class IngameLogic : MonoBehaviour
                 itemApple.SetIndex(new Vector2(_x, _y))
                          .SetName($"Apple[{_x}, {_y}]")
                          .SetNumber(Random.Range(1, 10))
+                         .SetSize(new Vector2(cellSize, cellSize))
                          .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet);
                 appleArray[_x, _y] = itemApple;
             }

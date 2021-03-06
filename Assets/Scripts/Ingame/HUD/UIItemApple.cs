@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 
 public class UIItemApple : MonoBehaviour
 {
+    [SerializeField] RectTransform rtBody;
     [SerializeField] Collider2D collider2D;
     [SerializeField] Image imageSelection;
     [SerializeField] Image imageBg;
@@ -17,6 +18,11 @@ public class UIItemApple : MonoBehaviour
     public Vector2 index { get; private set; }
     public int number { get; private set; }
 
+    public UIItemApple SetSize(Vector2 size)
+    {
+        rtBody.sizeDelta = size;
+        return this;
+    }
     public UIItemApple SetLocalPosition(Vector2 position)
     {
         transform.localPosition = position;
