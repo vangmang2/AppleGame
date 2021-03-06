@@ -12,8 +12,9 @@ public class UIItemApple : MonoBehaviour
     [SerializeField] Image imageBg;
     [SerializeField] Text txtNumber;
     public bool isTerminated { get; private set; }
+    public Vector2 getLocalPosition => transform.localPosition;
 
-    public int id;// { get; private set; }
+    public Vector2 index { get; private set; }
     public int number { get; private set; }
 
     public UIItemApple SetLocalPosition(Vector2 position)
@@ -21,14 +22,20 @@ public class UIItemApple : MonoBehaviour
         transform.localPosition = position;
         return this;
     }
-    public UIItemApple SetID(int id)
+    public UIItemApple SetIndex(Vector2 index)
     {
-        this.id = id;
+        this.index = index;
         return this;
     }
     public UIItemApple SetSprite(Sprite sprite)
     {
         imageBg.SetSprite(sprite);
+        return this;
+    }
+
+    public UIItemApple SetName(string name)
+    {
+        gameObject.name = name;
         return this;
     }
 

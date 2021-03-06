@@ -10,7 +10,7 @@ public class IngameLogic : MonoBehaviour
 {
     public static bool isGameOver = false;
     const int SATISFY_TOTAL_SUM = 10;
-    const float LIMIT_TIME = 60;
+    const float LIMIT_TIME = 6000;
 
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
@@ -20,8 +20,11 @@ public class IngameLogic : MonoBehaviour
     [SerializeField] float space;
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
+    [SerializeField] RectTransform rtHint;
     int score;
     UIItemApple[,] appleArray;
+    readonly List<UIItemApple> avaliableAppleList = new List<UIItemApple>();
+
 
     void Start()
     {
@@ -52,9 +55,10 @@ public class IngameLogic : MonoBehaviour
             for (int _x = 0; _x < x; _x++)
             {
                 var itemApple = Instantiate(applePrefab, trStage);
-                itemApple.SetID(++count)
-                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet)
-                         .SetNumber(Random.Range(1, 10));
+                itemApple.SetIndex(new Vector2(_x, _y))
+                         .SetName($"Apple[{_x}, {_y}]")
+                         .SetNumber(Random.Range(1, 10))
+                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet);
                 appleArray[_x, _y] = itemApple;
             }
         }
@@ -62,13 +66,73 @@ public class IngameLogic : MonoBehaviour
 
     public void FindAvailableTotal()
     {
+        avaliableAppleList.Clear();
         for (int _y = 0; _y < y; _y++)
         {
             for (int _x = 0; _x < x; _x++)
             {
                 var itemApple = appleArray[_x, _y];
+                
+                // 1) 현재 선택된 사과의 상하좌우 를 먼저 검사한다.
+                if (SearchVertical(_x, _y))
+                {
+                    HighlightAvaliableApples();
+                    return;
+                }
             }
         }
+
+        bool SearchVertical(int x, int y)
+        {
+            int minY = 0;
+            if (y == minY)
+                return false;
+            int idx = y;
+
+            while(idx > minY)
+            {
+                idx--;
+                var sum = 0;
+                for (int i = y; i >= idx; i--)
+                {
+                    var apple = appleArray[x, i];
+                    if(!apple.isTerminated)
+                        sum += apple.number;
+                }
+                if (sum == 10)
+                {
+                    for (int i = y; i >= idx; i--)
+                        avaliableAppleList.Add(appleArray[x, i]);
+                    return true;
+                }
+                else if (sum > 10)
+                    return false;
+            }
+            return false;
+        }
+    }
+
+    // 10의 합이 가능한 사과들을 하이라이트 효과처리함
+    public void HighlightAvaliableApples()
+    {        
+        rtHint.gameObject.SetActive(true);
+        var firstApple = avaliableAppleList[0];
+        var secondApple = avaliableAppleList[avaliableAppleList.Count - 1];
+        //Debug.Log($"FirstApple(x:{(int)firstApple.index.x} y:{firstApple.index.y}) SecondApple(x:{(int)secondApple.index.x} y:{secondApple.index.y}) ");
+
+        int xAxisLength = (int)Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
+        int yAxisLength = (int)Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
+        bool isVertical = yAxisLength > 1;
+
+        var centerPos = firstApple.getLocalPosition + secondApple.getLocalPosition;
+        centerPos /= 2;
+
+        int count = (isVertical ? yAxisLength : xAxisLength);
+        rtHint.sizeDelta = isVertical ? 
+            new Vector2(space, space * count) : 
+            new Vector2(space * count, space);
+        rtHint.anchoredPosition = centerPos;
+        avaliableAppleList.Clear();
     }
 
     float passedTime = 0f;
@@ -84,6 +148,8 @@ public class IngameLogic : MonoBehaviour
             popupPause.SetScore(score)
                       .ShowPopup();
         }
+
+        InputHandler.HandleKeyboardInput(KeyCode.Q, KeyInput.keyDown, FindAvailableTotal);
     }
 
 

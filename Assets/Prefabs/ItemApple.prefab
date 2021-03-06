@@ -109,8 +109,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 44, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -130,6 +130,7 @@ MonoBehaviour:
   imageSelection: {fileID: 6963007931457516650}
   imageBg: {fileID: 3860317314388000079}
   txtNumber: {fileID: 3860317315938533385}
+  id: 0
 --- !u!61 &928299058061712656
 BoxCollider2D:
   m_ObjectHideFlags: 0
