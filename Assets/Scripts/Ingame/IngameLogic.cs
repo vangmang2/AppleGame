@@ -81,11 +81,6 @@ public class IngameLogic : MonoBehaviour
             }
         });
 
-        orderedAppleList.ForEach(apple =>
-        {
-            Debug.Log(apple.index);
-        });
-
         var firstApple = orderedAppleList[0];
         var lastApple = orderedAppleList[terminatedApples.Count - 1];
 
