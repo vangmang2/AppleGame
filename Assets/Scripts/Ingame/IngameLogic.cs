@@ -65,12 +65,14 @@ public class IngameLogic : MonoBehaviour
 
     private void ActivateGravityFall(List<UIItemApple> terminatedApples)
     {
-        var firstApple = terminatedApples[0];
-        var secondApple = terminatedApples[terminatedApples.Count - 1];
+        var orderedAppleList = terminatedApples.OrderBy(apple => apple.index.x + apple.index.y).ToList();
 
-        int xAxisLength = Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
-        int yAxisLength = Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
+        var firstApple = orderedAppleList[0];
+        var lastApple = orderedAppleList[terminatedApples.Count - 1];
 
+        int xAxisLength = Mathf.Abs(firstApple.index.x - lastApple.index.x) + 1;
+        int yAxisLength = Mathf.Abs(firstApple.index.y - lastApple.index.y) + 1;
+        var x = 0;
         var y = 0;
 
         var appleList = new List<UIItemApple>();
@@ -87,8 +89,13 @@ public class IngameLogic : MonoBehaviour
                 if (!appleList.Contains(targetApple))
                     appleList.Add(targetApple);
             }
-
-            if (y > -yAxisLength)
+            if(xAxisLength > 1 && yAxisLength > 1)
+            {
+                if (x % xAxisLength == 0)
+                    y--;
+                x++;
+            }
+            else if (y > -yAxisLength)
                 y--;
             index.y = y;
             itemApple.SetIndex(index)
@@ -107,12 +114,9 @@ public class IngameLogic : MonoBehaviour
             var targetPos = new Vector2(targetIndex.x + 0.5f, -targetIndex.y - 0.5f) * space - offSet;
             apple.SetIndex(targetIndex)
                  .SetName($"Apple[{targetIndex.x}, {targetIndex.y}]")
-                 .SetNumber(Random.Range(1, 10))
                  .MoveToTarget(targetPos);
             appleArray[targetIndex.x, targetIndex.y] = apple;
         });
-
-        // 사라진 사과의 y인덱스에 해당하는 사과부터 새로 생성된 사과까지 리스트로 묶은 후 아래로 이동시킨다.
     }
 
     private void GenerateApples()
