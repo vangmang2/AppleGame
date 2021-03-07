@@ -27,6 +27,7 @@ public class IngameLogic : MonoBehaviour
     UIItemApple[,] appleArray;
     float space;
     float cellSize;
+    Vector2 offSet => new Vector2(x, -y) * 0.5f * space;
 
     void Start()
     {
@@ -45,19 +46,45 @@ public class IngameLogic : MonoBehaviour
                 if (selectedAppleList.Count > 2)
                     score += 10;
                 txtScore.Set(score);
+
+                // 중력 모드
+                ActivateGravityFall(selectedAppleList);
             }
         });
         GenerateApples();
     }
 
-    private void ActivateGravityFall()
+    private void ActivateGravityFall(List<UIItemApple> terminatedApples)
     {
+        var firstApple = terminatedApples[0];
+        var secondApple = terminatedApples[terminatedApples.Count - 1];
 
+        int xAxisLength = Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
+        int yAxisLength = Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
+
+        var y = 0;
+
+        terminatedApples.ForEach(apple =>
+        {
+            UIItemApple itemApple = null;
+            applePool.Spawn(ref itemApple, trStage);
+
+            var index = apple.index;
+            if (y > -yAxisLength)
+                y--;
+
+            index.y = y;
+            itemApple.SetIndex(index)
+                     .SetNumber(Random.Range(1, 10))
+                     .SetSize(new Vector2(cellSize, cellSize))
+                     .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * space - offSet)
+                     .SetLocalRotation(Quaternion.identity);
+
+        });
     }
 
     private void GenerateApples()
-    {
-        var offSet = new Vector2(x, -y) * 0.5f * space;
+    {        
         appleArray = new UIItemApple[x, y];
 
         for (int _y = 0; _y < y; _y++)
@@ -66,11 +93,12 @@ public class IngameLogic : MonoBehaviour
             {
                 UIItemApple itemApple = null;
                 applePool.Spawn(ref itemApple, trStage);
-                itemApple.SetIndex(new Vector2(_x, _y))
+                itemApple.SetIndex(new Index(_x, _y))
                          .SetName($"Apple[{_x}, {_y}]")
                          .SetNumber(Random.Range(1, 10))
                          .SetSize(new Vector2(cellSize, cellSize))
-                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet);
+                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet)
+                         .SetLocalRotation(Quaternion.identity);
                 appleArray[_x, _y] = itemApple;
             }
         }
@@ -166,8 +194,8 @@ public class IngameLogic : MonoBehaviour
         var firstApple = avaliableAppleList[0];
         var secondApple = avaliableAppleList[avaliableAppleList.Count - 1];
 
-        int xAxisLength = (int)Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
-        int yAxisLength = (int)Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
+        int xAxisLength = Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
+        int yAxisLength = Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
         bool isVertical = yAxisLength > 1;
 
         var centerPos = firstApple.getLocalPosition + secondApple.getLocalPosition;

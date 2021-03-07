@@ -5,6 +5,22 @@ using UnityEngine.UI;
 using System;
 using Random = UnityEngine.Random;
 
+public struct Index
+{
+    public int x, y;
+
+    public Index(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public override string ToString()
+    {
+        return $"x:{x} y:{y}";
+    }
+}
+
 public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
 {
     [SerializeField] RectTransform rtBody;
@@ -16,7 +32,7 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     public GameObject getGameObject => gameObject;
     public Vector2 getLocalPosition => transform.localPosition;
     public bool isTerminated { get; private set; }
-    public Vector2 index { get; private set; }
+    public Index index { get; private set; }
     public int number { get; private set; }
 
     public UIItemApple SetSize(Vector2 size)
@@ -29,7 +45,13 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
         transform.localPosition = position;
         return this;
     }
-    public UIItemApple SetIndex(Vector2 index)
+    public UIItemApple SetLocalRotation(Quaternion rotation)
+    {
+        transform.localRotation = rotation;
+        return this;
+    }
+
+    public UIItemApple SetIndex(Index index)
     {
         this.index = index;
         return this;
