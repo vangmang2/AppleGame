@@ -23,6 +23,8 @@ public struct Index
 
 public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
 {
+    public const float APPLE_MOVEMENT_TIME = 0.25f;
+
     [SerializeField] RectTransform rtBody;
     [SerializeField] Collider2D collider2D;
     [SerializeField] Image imageSelection;
@@ -33,7 +35,7 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     public Vector2 getLocalPosition => transform.localPosition;
     public bool isTerminated { get; private set; }
     public Index index { get; private set; }
-    public int number { get; private set; }
+    public int number;// { get; private set; }
 
     public UIItemApple SetSize(Vector2 size)
     {
@@ -123,9 +125,32 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
         callback?.Invoke();
     }
 
+    public void MoveToTarget(Vector2 target)
+    {
+        StartCoroutine(CoMoveToTarget(target));
+    }
+
+    private IEnumerator CoMoveToTarget(Vector2 target)
+    {
+        var startPos = transform.localPosition;
+        var t = 0f;
+        while(t <= 1f)
+        {
+            t += Time.deltaTime / APPLE_MOVEMENT_TIME;
+            transform.localPosition = Vector2.Lerp(startPos, target, t);
+            yield return null;
+        }
+    }
+
     /*Reflection*/
     public void GetInstance(Action<UIItemApple> callback)
     {
         callback?.Invoke(this);
+    }
+
+    public void OnSpawn()
+    {
+        collider2D.enabled = true;
+        isTerminated = false;
     }
 }

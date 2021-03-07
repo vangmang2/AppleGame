@@ -256,6 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   applePool: {fileID: 1990781090}
+  graphicRaycaster: {fileID: 1144624116}
   ingameInputHandler: {fileID: 1527756573}
   leftTimeProgressBar: {fileID: 110117691}
   trStage: {fileID: 1376531187}
@@ -2033,8 +2034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3860317314672973499, guid: f3e666de410b1fb4fa3ef16a31267d6a, type: 3}
-  spawnedCount: 0
-  despawnedCount: 0
+  spawnCount: 0
 --- !u!1 &2065263084
 GameObject:
   m_ObjectHideFlags: 0

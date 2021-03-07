@@ -31,6 +31,7 @@ public class UnityObjectPool : MonoBehaviour
         Action<T> callback = (_instance) => itemInstance = _instance;
         item.SendMessage("GetInstance", callback, SendMessageOptions.DontRequireReceiver);
         instance = itemInstance;
+        instance.OnSpawn();
         spawnCount++;
         return item;
     }
@@ -47,6 +48,7 @@ public class UnityObjectPool : MonoBehaviour
 
 public interface IPoolable<T> where T : Object
 {
+    void OnSpawn();
     GameObject getGameObject { get; } 
     void GetInstance(Action<T> callback);
 }

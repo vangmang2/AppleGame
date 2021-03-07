@@ -13,6 +13,7 @@ public class IngameLogic : MonoBehaviour
     const float LIMIT_TIME = 6000;
 
     [SerializeField] UnityObjectPool applePool;
+    [SerializeField] GraphicRaycaster graphicRaycaster;
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
     [SerializeField] Transform trStage;
@@ -39,8 +40,9 @@ public class IngameLogic : MonoBehaviour
         ingameInputHandler.SetCheckSumAction((selectedAppleList) =>
         {
             int sum = selectedAppleList.Sum(apple => apple.number);
-            if(sum == SATISFY_TOTAL_SUM)
+            if (sum == SATISFY_TOTAL_SUM)
             {
+                StartCoroutine(CoRaycastAfterHandleInput());
                 selectedAppleList.ForEach(apple => apple.Terminate(() => applePool.Despawn(apple)));
                 score += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
@@ -54,6 +56,13 @@ public class IngameLogic : MonoBehaviour
         GenerateApples();
     }
 
+    private IEnumerator CoRaycastAfterHandleInput()
+    {
+        graphicRaycaster.enabled = false;
+        yield return CommonUtility.GetYieldSec(UIItemApple.APPLE_MOVEMENT_TIME + 0.2f);
+        graphicRaycaster.enabled = true;
+    }
+
     private void ActivateGravityFall(List<UIItemApple> terminatedApples)
     {
         var firstApple = terminatedApples[0];
@@ -64,27 +73,50 @@ public class IngameLogic : MonoBehaviour
 
         var y = 0;
 
+        var appleList = new List<UIItemApple>();
         terminatedApples.ForEach(apple =>
         {
             UIItemApple itemApple = null;
             applePool.Spawn(ref itemApple, trStage);
 
             var index = apple.index;
+
+            for (int _y = index.y - yAxisLength; _y >= 0; _y--)
+            {
+                var targetApple = appleArray[index.x, _y];
+                if (!appleList.Contains(targetApple))
+                    appleList.Add(targetApple);
+            }
+
             if (y > -yAxisLength)
                 y--;
-
             index.y = y;
             itemApple.SetIndex(index)
                      .SetNumber(Random.Range(1, 10))
                      .SetSize(new Vector2(cellSize, cellSize))
                      .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * space - offSet)
                      .SetLocalRotation(Quaternion.identity);
-
+            appleList.Add(itemApple);
         });
+
+        appleList.ForEach(apple =>
+        {
+            var currentIndex = apple.index;
+            var targetIndex = apple.index;
+            targetIndex.y += yAxisLength;
+            var targetPos = new Vector2(targetIndex.x + 0.5f, -targetIndex.y - 0.5f) * space - offSet;
+            apple.SetIndex(targetIndex)
+                 .SetName($"Apple[{targetIndex.x}, {targetIndex.y}]")
+                 .SetNumber(Random.Range(1, 10))
+                 .MoveToTarget(targetPos);
+            appleArray[targetIndex.x, targetIndex.y] = apple;
+        });
+
+        // 사라진 사과의 y인덱스에 해당하는 사과부터 새로 생성된 사과까지 리스트로 묶은 후 아래로 이동시킨다.
     }
 
     private void GenerateApples()
-    {        
+    {
         appleArray = new UIItemApple[x, y];
 
         for (int _y = 0; _y < y; _y++)
@@ -131,14 +163,14 @@ public class IngameLogic : MonoBehaviour
                 return false;
             int idx = y;
 
-            while(idx > minY)
+            while (idx > minY)
             {
                 idx--;
                 var sum = 0;
                 for (int i = y; i >= idx; i--)
                 {
                     var apple = appleArray[x, i];
-                    if(!apple.isTerminated)
+                    if (!apple.isTerminated)
                         sum += apple.number;
                 }
                 if (sum == 10)
@@ -160,11 +192,11 @@ public class IngameLogic : MonoBehaviour
                 return false;
             int idx = x;
 
-            while(idx > minX)
+            while (idx > minX)
             {
                 idx--;
                 var sum = 0;
-                for(int i = x; i >= idx; i--)
+                for (int i = x; i >= idx; i--)
                 {
                     var apple = appleArray[i, y];
                     if (!apple.isTerminated)
@@ -202,8 +234,8 @@ public class IngameLogic : MonoBehaviour
         centerPos /= 2;
 
         int count = (isVertical ? yAxisLength : xAxisLength);
-        rtHint.sizeDelta = isVertical ? 
-            new Vector2(space, space * count) : 
+        rtHint.sizeDelta = isVertical ?
+            new Vector2(space, space * count) :
             new Vector2(space * count, space);
         rtHint.anchoredPosition = centerPos;
         avaliableAppleList.Clear();
@@ -230,7 +262,7 @@ public class IngameLogic : MonoBehaviour
         float time = Mathf.Max(LIMIT_TIME - passedTime, 0f);
         leftTimeProgressBar.SetFill(time / LIMIT_TIME);
 
-        if(time <= 0f && !isGameOver)
+        if (time <= 0f && !isGameOver)
         {
             isGameOver = true;
             popupPause.SetScore(score)
