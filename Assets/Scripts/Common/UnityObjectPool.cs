@@ -9,7 +9,7 @@ public class UnityObjectPool : MonoBehaviour
     [SerializeField] GameObject prefab;
 
     readonly Stack<GameObject> itemStack = new Stack<GameObject>();
-    [SerializeField] int spawnedCount, despawnedCount;
+    [SerializeField] int spawnCount;
 
     private GameObject CreateItem()
     {
@@ -17,7 +17,7 @@ public class UnityObjectPool : MonoBehaviour
         return item;
     }
 
-    public GameObject Spawn<T>(ref T instance) where T : Object, IPoolable<T>
+    public GameObject Spawn<T>(ref T instance, Transform parent) where T : Object, IPoolable<T>
     {
         GameObject item = null;
         if(itemStack.Count > 0)
@@ -25,43 +25,28 @@ public class UnityObjectPool : MonoBehaviour
         else        
             item = CreateItem();
 
-        item.transform.SetParent(transform.root);
+        item.transform.SetParent(parent);
         item.SetActive(true);
         T itemInstance = null;
         Action<T> callback = (_instance) => itemInstance = _instance;
         item.SendMessage("GetInstance", callback, SendMessageOptions.DontRequireReceiver);
         instance = itemInstance;
-        spawnedCount++;
+        spawnCount++;
         return item;
     }
 
-    public void Despawn(GameObject item)
+    public void Despawn<T>(T item) where T : Object, IPoolable<T>
     {
-        itemStack.Push(item);
-        item.transform.SetParent(transform);
-        despawnedCount++;
-        item.SetActive(false);
+        var _item = item.getGameObject;
+        itemStack.Push(_item);
+        _item.transform.SetParent(transform);
+        spawnCount--;
+        _item.SetActive(false);
     }
-
-    //List<GameObject> appleList = new List<GameObject>();
-    //void Update()
-    //{
-    //    InputHandler.HandleKeyboardInput(KeyCode.Q, KeyInput.keyDown, () =>
-    //    {
-    //        UIItemApple apple = null;
-    //        appleList.Add(Spawn(ref apple));
-    //    });
-    //    InputHandler.HandleKeyboardInput(KeyCode.W, KeyInput.keyDown, () =>
-    //    {
-    //        if (appleList.Count > 0)
-    //        {
-    //            Despawn(appleList[despawnedCount]);
-    //        }
-    //    });
-    //}
 }
 
 public interface IPoolable<T> where T : Object
 {
+    GameObject getGameObject { get; } 
     void GetInstance(Action<T> callback);
 }

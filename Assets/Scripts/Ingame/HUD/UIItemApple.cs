@@ -12,9 +12,10 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     [SerializeField] Image imageSelection;
     [SerializeField] Image imageBg;
     [SerializeField] Text txtNumber;
-    public bool isTerminated { get; private set; }
-    public Vector2 getLocalPosition => transform.localPosition;
 
+    public GameObject getGameObject => gameObject;
+    public Vector2 getLocalPosition => transform.localPosition;
+    public bool isTerminated { get; private set; }
     public Vector2 index { get; private set; }
     public int number { get; private set; }
 
@@ -69,14 +70,14 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
         imageSelection.color = enable ? imageSelection.color.CopyColor(a: 1f) : imageSelection.color.CopyColor(a: 0f);
     }
 
-    public void Terminate()
+    public void Terminate(Action callback = null)
     {
         isTerminated = true;
         collider2D.enabled = false;
-        StartCoroutine(CoPlayTerminationAnim());
+        StartCoroutine(CoPlayTerminationAnim(callback));
     }
 
-    private IEnumerator CoPlayTerminationAnim()
+    private IEnumerator CoPlayTerminationAnim(Action callback)
     {
         var startPos = (Vector2)transform.localPosition;
         var endPos = new Vector2(startPos.x + Random.Range(-350f, 350f), -Screen.height);
@@ -97,7 +98,7 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
             transform.localRotation = Quaternion.Lerp(startRot, Quaternion.Euler(0f, 0f, randAngle), t);
             yield return null;
         }
-        gameObject.SetActive(false);
+        callback?.Invoke();
     }
 
     /*Reflection*/

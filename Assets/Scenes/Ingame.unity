@@ -255,11 +255,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0123df88f511c234289cdfcf43aca84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  applePool: {fileID: 1990781090}
   ingameInputHandler: {fileID: 1527756573}
   leftTimeProgressBar: {fileID: 110117691}
   trStage: {fileID: 1376531187}
-  applePrefab: {fileID: 3860317314672973501, guid: f3e666de410b1fb4fa3ef16a31267d6a,
-    type: 3}
   x: 17
   y: 10
   txtScore: {fileID: 70622592}
@@ -2034,6 +2033,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3860317314672973499, guid: f3e666de410b1fb4fa3ef16a31267d6a, type: 3}
+  spawnedCount: 0
+  despawnedCount: 0
 --- !u!1 &2065263084
 GameObject:
   m_ObjectHideFlags: 0

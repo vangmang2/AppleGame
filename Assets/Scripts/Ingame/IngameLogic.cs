@@ -12,10 +12,10 @@ public class IngameLogic : MonoBehaviour
     const int SATISFY_TOTAL_SUM = 10;
     const float LIMIT_TIME = 6000;
 
+    [SerializeField] UnityObjectPool applePool;
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
     [SerializeField] Transform trStage;
-    [SerializeField] UIItemApple applePrefab;
     [SerializeField] int x, y;
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
@@ -40,7 +40,7 @@ public class IngameLogic : MonoBehaviour
             int sum = selectedAppleList.Sum(apple => apple.number);
             if(sum == SATISFY_TOTAL_SUM)
             {
-                selectedAppleList.ForEach(apple => apple.Terminate());
+                selectedAppleList.ForEach(apple => apple.Terminate(() => applePool.Despawn(apple)));
                 score += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
                     score += 10;
@@ -64,7 +64,8 @@ public class IngameLogic : MonoBehaviour
         {
             for (int _x = 0; _x < x; _x++)
             {
-                var itemApple = Instantiate(applePrefab, trStage);
+                UIItemApple itemApple = null;
+                applePool.Spawn(ref itemApple, trStage);
                 itemApple.SetIndex(new Vector2(_x, _y))
                          .SetName($"Apple[{_x}, {_y}]")
                          .SetNumber(Random.Range(1, 10))
@@ -210,6 +211,4 @@ public class IngameLogic : MonoBehaviour
 
         //InputHandler.HandleKeyboardInput(KeyCode.Q, KeyInput.keyDown, Onclick_FindAvailableTotal);
     }
-
-
 }
