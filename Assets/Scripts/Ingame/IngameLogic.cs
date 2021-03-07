@@ -65,7 +65,26 @@ public class IngameLogic : MonoBehaviour
 
     private void ActivateGravityFall(List<UIItemApple> terminatedApples)
     {
-        var orderedAppleList = terminatedApples.OrderBy(apple => apple.index.x + apple.index.y).ToList();
+        var orderedAppleList = terminatedApples.ToList();
+        orderedAppleList.Sort((apple1, apple2) =>
+        {
+            if (apple1.index.y < apple2.index.y)
+                return -1;
+            else if (apple1.index.y > apple2.index.y)
+                return 1;
+            else
+            {
+                if (apple1.index.x < apple2.index.x)
+                    return -1;
+                else
+                    return 1;
+            }
+        });
+
+        orderedAppleList.ForEach(apple =>
+        {
+            Debug.Log(apple.index);
+        });
 
         var firstApple = orderedAppleList[0];
         var lastApple = orderedAppleList[terminatedApples.Count - 1];
@@ -76,7 +95,8 @@ public class IngameLogic : MonoBehaviour
         var y = 0;
 
         var appleList = new List<UIItemApple>();
-        terminatedApples.ForEach(apple =>
+        var spawnedList = new List<UIItemApple>();
+        orderedAppleList.ForEach(apple =>
         {
             UIItemApple itemApple = null;
             applePool.Spawn(ref itemApple, trStage);
@@ -104,6 +124,7 @@ public class IngameLogic : MonoBehaviour
                      .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * space - offSet)
                      .SetLocalRotation(Quaternion.identity);
             appleList.Add(itemApple);
+            spawnedList.Add(itemApple);
         });
 
         appleList.ForEach(apple =>
