@@ -50,6 +50,11 @@ public class IngameLogic : MonoBehaviour
         GenerateApples();
     }
 
+    private void ActivateGravityFall()
+    {
+
+    }
+
     private void GenerateApples()
     {
         var offSet = new Vector2(x, -y) * 0.5f * space;

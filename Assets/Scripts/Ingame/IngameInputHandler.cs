@@ -55,7 +55,7 @@ public class IngameInputHandler : MonoBehaviour
             {
                 UIItemApple itemApple = null;
                 Action<UIItemApple> callback = (_itemApple) => itemApple = _itemApple;
-                apple.transform.SendMessage("GetItemApple", callback, SendMessageOptions.DontRequireReceiver);
+                apple.transform.SendMessage("GetInstance", callback, SendMessageOptions.DontRequireReceiver);
 
                 if (itemApple != null && !appleList.Contains(itemApple))
                 {

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using Random = UnityEngine.Random;
 
-public class UIItemApple : MonoBehaviour
+public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
 {
     [SerializeField] RectTransform rtBody;
     [SerializeField] Collider2D collider2D;
@@ -101,7 +101,7 @@ public class UIItemApple : MonoBehaviour
     }
 
     /*Reflection*/
-    void GetItemApple(Action<UIItemApple> callback)
+    public void GetInstance(Action<UIItemApple> callback)
     {
         callback?.Invoke(this);
     }
