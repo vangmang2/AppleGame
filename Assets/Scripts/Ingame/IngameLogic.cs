@@ -67,6 +67,7 @@ public class IngameLogic : MonoBehaviour
         graphicRaycaster.enabled = true;
     }
 
+    readonly List<UIItemApple> aboutToFallAppleList = new List<UIItemApple>();
     private void ActivateGravityFall(List<UIItemApple> terminatedApples)
     {
         var orderedAppleList = terminatedApples.ToList();
@@ -93,8 +94,6 @@ public class IngameLogic : MonoBehaviour
         var x = 0;
         var y = 0;
 
-        var appleList = new List<UIItemApple>();
-        var spawnedList = new List<UIItemApple>();
         orderedAppleList.ForEach(apple =>
         {
             UIItemApple itemApple = null;
@@ -105,8 +104,8 @@ public class IngameLogic : MonoBehaviour
             for (int _y = index.y - yAxisLength; _y >= 0; _y--)
             {
                 var targetApple = appleArray[index.x, _y];
-                if (!appleList.Contains(targetApple))
-                    appleList.Add(targetApple);
+                if (!aboutToFallAppleList.Contains(targetApple))
+                    aboutToFallAppleList.Add(targetApple);
             }
             if(xAxisLength > 1 && yAxisLength > 1)
             {
@@ -122,11 +121,10 @@ public class IngameLogic : MonoBehaviour
                      .SetSize(new Vector2(cellSize, cellSize))
                      .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * space - offSet)
                      .SetLocalRotation(Quaternion.identity);
-            appleList.Add(itemApple);
-            spawnedList.Add(itemApple);
+            aboutToFallAppleList.Add(itemApple);
         });
 
-        appleList.ForEach(apple =>
+        aboutToFallAppleList.ForEach(apple =>
         {
             var currentIndex = apple.index;
             var targetIndex = apple.index;
@@ -137,6 +135,7 @@ public class IngameLogic : MonoBehaviour
                  .MoveToTarget(targetPos);
             appleArray[targetIndex.x, targetIndex.y] = apple;
         });
+        aboutToFallAppleList.Clear();
     }
 
     private void GenerateApples()
