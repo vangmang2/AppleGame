@@ -12,15 +12,16 @@ public class IngameLogic : MonoBehaviour
     const int SATISFY_TOTAL_SUM = 10;
     const float LIMIT_TIME = 6000;
 
+    [SerializeField] ComboSystem comboSystem;
     [SerializeField] UnityObjectPool applePool;
     [SerializeField] GraphicRaycaster graphicRaycaster;
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
     [SerializeField] Transform trStage, trTerminatedApplesParent;
-    [SerializeField] int x, y;
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
     [SerializeField] RectTransform rtHint, rtStage;
+    [SerializeField] int x, y;
 
     readonly List<UIItemApple> avaliableAppleList = new List<UIItemApple>();
 
@@ -52,7 +53,7 @@ public class IngameLogic : MonoBehaviour
                 if (selectedAppleList.Count > 2)
                     score += 10;
                 txtScore.Set(score);
-
+                comboSystem.ActivateCombo();
                 // 중력 모드
                 ActivateGravityFall(selectedAppleList);
             }
