@@ -11,7 +11,7 @@ public class PopupGameOver : MonoBehaviour
 
     public PopupGameOver SetScore(int score)
     {
-        txtScore.Set($"<size=40>Score</size>\n{score}");
+        txtScore.Set($"<size=35>Score</size>\n<size=55>{score}</size>");
         return this;
     }
 
