@@ -22,6 +22,11 @@ public class ComboSystem : MonoBehaviour
         if (isAvailableToShowCombo || currentCombo == 0)
             currentCombo++;
 
+        if (currentCombo == 5)
+            Achievement.Achieve_MakeCombo5((key) => IngameManager.instance.ShowAchievement(key));
+        else if(currentCombo == 10)
+            Achievement.Achieve_MakeCombo10((key) => IngameManager.instance.ShowAchievement(key));
+
         prevComboActivatedTime = Time.realtimeSinceStartup;
         SetComboText(currentCombo);
     }

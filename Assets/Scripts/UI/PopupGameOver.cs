@@ -17,6 +17,11 @@ public class PopupGameOver : MonoBehaviour
 
     public void ShowPopup()
     {
+        int gamePlayTime = PlayerPrefs.GetInt("GamePlayTime", 0);
+        gamePlayTime++;
+        PlayerPrefs.SetInt("GamePlayTime", gamePlayTime);
+        if (gamePlayTime == 5)
+            Achievement.Achieve_GamePlayTime5((key) => IngameManager.instance.ShowAchievement(key));
         gameObject.SetActive(true);
     }
 

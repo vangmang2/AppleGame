@@ -11,7 +11,7 @@ public class IngameLogic : MonoBehaviour
 {
     public static bool isGameOver = false;
     const int SATISFY_TOTAL_SUM = 10;
-    const float LIMIT_TIME = 1f;
+    const float LIMIT_TIME = 60f;
 
     [SerializeField] ComboSystem comboSystem;
     [SerializeField] UnityObjectPool applePool;
