@@ -6,11 +6,12 @@ using System;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
+// 게임의 매커니즘, 시스템을 담당한다.
 public class IngameLogic : MonoBehaviour
 {
     public static bool isGameOver = false;
     const int SATISFY_TOTAL_SUM = 10;
-    const float LIMIT_TIME = 60f;
+    const float LIMIT_TIME = 1f;
 
     [SerializeField] ComboSystem comboSystem;
     [SerializeField] UnityObjectPool applePool;
