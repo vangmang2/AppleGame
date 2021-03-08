@@ -35,7 +35,7 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     public Vector2 getLocalPosition => transform.localPosition;
     public bool isTerminated { get; private set; }
     public Index index { get; private set; }
-    public int number;// { get; private set; }
+    public int number { get; private set; }
 
     public UIItemApple SetParent(Transform parent)
     {
