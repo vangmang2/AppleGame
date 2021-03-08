@@ -37,6 +37,11 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     public Index index { get; private set; }
     public int number;// { get; private set; }
 
+    public UIItemApple SetParent(Transform parent)
+    {
+        transform.SetParent(parent);
+        return this;
+    }
     public UIItemApple SetSize(Vector2 size)
     {
         rtBody.sizeDelta = size;

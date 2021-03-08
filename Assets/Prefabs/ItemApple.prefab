@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -131,6 +131,7 @@ MonoBehaviour:
   imageSelection: {fileID: 6963007931457516650}
   imageBg: {fileID: 3860317314388000079}
   txtNumber: {fileID: 3860317315938533385}
+  number: 0
 --- !u!61 &928299058061712656
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -295,7 +296,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.9175284, b: 0, a: 0}
   m_RaycastTarget: 0
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

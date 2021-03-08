@@ -16,7 +16,7 @@ public class IngameLogic : MonoBehaviour
     [SerializeField] GraphicRaycaster graphicRaycaster;
     [SerializeField] IngameInputHandler ingameInputHandler;
     [SerializeField] UIItemProgressBar leftTimeProgressBar;
-    [SerializeField] Transform trStage;
+    [SerializeField] Transform trStage, trTerminatedApplesParent;
     [SerializeField] int x, y;
     [SerializeField] Text txtScore;
     [SerializeField] PopupGameOver popupPause;
@@ -43,7 +43,11 @@ public class IngameLogic : MonoBehaviour
             if (sum == SATISFY_TOTAL_SUM)
             {
                 StartCoroutine(CoRaycastAfterHandleInput());
-                selectedAppleList.ForEach(apple => apple.Terminate(() => applePool.Despawn(apple)));
+                selectedAppleList.ForEach(apple =>
+                {
+                    apple.SetParent(trTerminatedApplesParent);
+                    apple.Terminate(() => applePool.Despawn(apple));
+                });
                 score += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
                     score += 10;
