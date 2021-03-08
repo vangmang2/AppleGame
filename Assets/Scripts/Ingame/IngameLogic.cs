@@ -10,7 +10,7 @@ public class IngameLogic : MonoBehaviour
 {
     public static bool isGameOver = false;
     const int SATISFY_TOTAL_SUM = 10;
-    const float LIMIT_TIME = 6000;
+    const float LIMIT_TIME = 60f;
 
     [SerializeField] ComboSystem comboSystem;
     [SerializeField] UnityObjectPool applePool;
@@ -248,13 +248,13 @@ public class IngameLogic : MonoBehaviour
         coroutine = StartCoroutine(CoPlayHighlightHint());
 
         var firstApple = avaliableAppleList[0];
-        var secondApple = avaliableAppleList[avaliableAppleList.Count - 1];
+        var lastApple = avaliableAppleList[avaliableAppleList.Count - 1];
 
-        int xAxisLength = Mathf.Abs(firstApple.index.x - secondApple.index.x) + 1;
-        int yAxisLength = Mathf.Abs(firstApple.index.y - secondApple.index.y) + 1;
+        int xAxisLength = Mathf.Abs(firstApple.index.x - lastApple.index.x) + 1;
+        int yAxisLength = Mathf.Abs(firstApple.index.y - lastApple.index.y) + 1;
         bool isVertical = yAxisLength > 1;
 
-        var centerPos = firstApple.getLocalPosition + secondApple.getLocalPosition;
+        var centerPos = firstApple.getLocalPosition + lastApple.getLocalPosition;
         centerPos /= 2;
 
         int count = (isVertical ? yAxisLength : xAxisLength);
