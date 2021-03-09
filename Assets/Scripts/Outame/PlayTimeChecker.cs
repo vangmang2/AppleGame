@@ -28,7 +28,7 @@ public class PlayTimeChecker : MonoBehaviour
         var currentTime = DateTime.Now;
         var timeGapFromQuit = currentTime.Subtract(savedQuitTime);
 
-        mCurrentApples = PlayerPrefs.GetInt(SAVED_APPLE_COUNT, 0);
+        mCurrentApples = PlayerPrefs.GetInt(SAVED_APPLE_COUNT, PLAY_AVALIABLE_MAX_TIME);
         mCurrentRefillTime = savedRefillTime;
 
 
