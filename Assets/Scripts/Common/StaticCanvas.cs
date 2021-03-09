@@ -12,6 +12,7 @@ public class StaticCanvas : MonoBehaviour
     [RuntimeInitializeOnLoadMethod]
     static void InitializeOnStartUp()
     {
+        Application.runInBackground = true;
         instance = CreateInstance();
     }
 
