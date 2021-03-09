@@ -26,18 +26,18 @@ public class IngameLogic : MonoBehaviour
 
     readonly List<UIItemApple> avaliableAppleList = new List<UIItemApple>();
 
-    int score;
-    UIItemApple[,] appleArray;
-    float space;
-    float cellSize;
-    Vector2 offSet => new Vector2(x, -y) * 0.5f * space;
+    int mScore;
+    UIItemApple[,] mAppleArray;
+    float mSpace;
+    float mCellSize;
+    Vector2 offSet => new Vector2(x, -y) * 0.5f * mSpace;
 
     void Start()
     {
         isGameOver = false;
         var stageSize = new Vector2(Screen.width, Screen.height) + rtStage.sizeDelta;
-        cellSize = Mathf.Min(stageSize.x / x, stageSize.y / y) - 10f;
-        space = cellSize + 10;
+        mCellSize = Mathf.Min(stageSize.x / x, stageSize.y / y) - 10f;
+        mSpace = mCellSize + 10;
 
         ingameInputHandler.SetCheckSumAction((selectedAppleList) =>
         {
@@ -50,10 +50,10 @@ public class IngameLogic : MonoBehaviour
                     apple.SetParent(trTerminatedApplesParent);
                     apple.Terminate(() => applePool.Despawn(apple));
                 });
-                score += selectedAppleList.Count;
+                mScore += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
-                    score += 10;
-                txtScore.Set(score);
+                    mScore += 10;
+                txtScore.Set(mScore);
                 comboSystem.ActivateCombo();
                 // 중력 모드
                 ActivateGravityFall(selectedAppleList);
@@ -105,7 +105,7 @@ public class IngameLogic : MonoBehaviour
 
             for (int _y = index.y - yAxisLength; _y >= 0; _y--)
             {
-                var targetApple = appleArray[index.x, _y];
+                var targetApple = mAppleArray[index.x, _y];
                 if (!aboutToFallAppleList.Contains(targetApple))
                     aboutToFallAppleList.Add(targetApple);
             }
@@ -120,8 +120,8 @@ public class IngameLogic : MonoBehaviour
             index.y = y;
             itemApple.SetIndex(index)
                      .SetNumber(Random.Range(1, 10))
-                     .SetSize(new Vector2(cellSize, cellSize))
-                     .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * space - offSet)
+                     .SetSize(new Vector2(mCellSize, mCellSize))
+                     .SetLocalPosition(new Vector2(index.x + 0.5f, -index.y - 0.5f) * mSpace - offSet)
                      .SetLocalRotation(Quaternion.identity);
             aboutToFallAppleList.Add(itemApple);
         });
@@ -131,18 +131,18 @@ public class IngameLogic : MonoBehaviour
             var currentIndex = apple.index;
             var targetIndex = apple.index;
             targetIndex.y += yAxisLength;
-            var targetPos = new Vector2(targetIndex.x + 0.5f, -targetIndex.y - 0.5f) * space - offSet;
+            var targetPos = new Vector2(targetIndex.x + 0.5f, -targetIndex.y - 0.5f) * mSpace - offSet;
             apple.SetIndex(targetIndex)
                  .SetName($"Apple[{targetIndex.x}, {targetIndex.y}]")
                  .MoveToTarget(targetPos);
-            appleArray[targetIndex.x, targetIndex.y] = apple;
+            mAppleArray[targetIndex.x, targetIndex.y] = apple;
         });
         aboutToFallAppleList.Clear();
     }
 
     private void GenerateApples()
     {
-        appleArray = new UIItemApple[x, y];
+        mAppleArray = new UIItemApple[x, y];
 
         for (int _y = 0; _y < y; _y++)
         {
@@ -153,10 +153,10 @@ public class IngameLogic : MonoBehaviour
                 itemApple.SetIndex(new Index(_x, _y))
                          .SetName($"Apple[{_x}, {_y}]")
                          .SetNumber(Random.Range(1, 10))
-                         .SetSize(new Vector2(cellSize, cellSize))
-                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * space - offSet)
+                         .SetSize(new Vector2(mCellSize, mCellSize))
+                         .SetLocalPosition(new Vector2(_x + 0.5f, -_y - 0.5f) * mSpace - offSet)
                          .SetLocalRotation(Quaternion.identity);
-                appleArray[_x, _y] = itemApple;
+                mAppleArray[_x, _y] = itemApple;
             }
         }
     }
@@ -194,14 +194,14 @@ public class IngameLogic : MonoBehaviour
                 var sum = 0;
                 for (int i = y; i >= idx; i--)
                 {
-                    var apple = appleArray[x, i];
+                    var apple = mAppleArray[x, i];
                     if (!apple.isTerminated)
                         sum += apple.number;
                 }
                 if (sum == 10)
                 {
                     for (int i = y; i >= idx; i--)
-                        avaliableAppleList.Add(appleArray[x, i]);
+                        avaliableAppleList.Add(mAppleArray[x, i]);
                     return true;
                 }
                 else if (sum > 10)
@@ -223,14 +223,14 @@ public class IngameLogic : MonoBehaviour
                 var sum = 0;
                 for (int i = x; i >= idx; i--)
                 {
-                    var apple = appleArray[i, y];
+                    var apple = mAppleArray[i, y];
                     if (!apple.isTerminated)
                         sum += apple.number;
                 }
                 if (sum == 10)
                 {
                     for (int i = x; i >= idx; i--)
-                        avaliableAppleList.Add(appleArray[i, y]);
+                        avaliableAppleList.Add(mAppleArray[i, y]);
                     return true;
                 }
                 else if (sum > 10)
@@ -260,8 +260,8 @@ public class IngameLogic : MonoBehaviour
 
         int count = (isVertical ? yAxisLength : xAxisLength);
         rtHint.sizeDelta = isVertical ?
-            new Vector2(space, space * count) :
-            new Vector2(space * count, space);
+            new Vector2(mSpace, mSpace * count) :
+            new Vector2(mSpace * count, mSpace);
         rtHint.anchoredPosition = centerPos;
         avaliableAppleList.Clear();
     }
@@ -290,7 +290,7 @@ public class IngameLogic : MonoBehaviour
         if (time <= 0f && !isGameOver)
         {
             isGameOver = true;
-            popupPause.SetScore(score)
+            popupPause.SetScore(mScore)
                       .ShowPopup();
         }
 

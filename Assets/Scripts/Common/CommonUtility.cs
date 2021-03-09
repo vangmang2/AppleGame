@@ -45,6 +45,11 @@ public static class CommonUtility
         }
     }
 
+    public static DateTime ParseToDateTime(this string target)
+        => DateTime.Parse(target);
+    public static TimeSpan ParseToTimeSpan(this string target)
+        => TimeSpan.Parse(target);
+
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;

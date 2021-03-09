@@ -27,7 +27,11 @@ public class PopupGameOver : MonoBehaviour
 
     public void OnClick_Replay()
     {
-        SceneManager.LoadScene(1/*IngameScene*/);
+        if (StaticCanvas.instance.CanPlay())
+        {
+            StaticCanvas.instance.UseAppleToPlay();
+            SceneManager.LoadScene(1/*IngameScene*/);
+        }
     }
 
     public void OnClick_ToMainMenu()

@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class OutgameManager : MonoBehaviour
 {
-
     public void OnClick_ToIngame()
     {
-        SceneManager.LoadScene(1/*IngameScene*/);
+        if (StaticCanvas.instance.CanPlay())
+        {
+            StaticCanvas.instance.UseAppleToPlay();
+            SceneManager.LoadScene(1/*IngameScene*/);
+        }
     }
 }

@@ -31,7 +31,7 @@ public class UnityObjectPool : MonoBehaviour
         Action<T> callback = (_instance) => itemInstance = _instance;
         item.SendMessage("GetInstance", callback, SendMessageOptions.DontRequireReceiver);
         instance = itemInstance;
-        instance.OnSpawn();
+        instance?.OnSpawn();
         spawnCount++;
         return item;
     }

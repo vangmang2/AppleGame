@@ -11,7 +11,7 @@ public class IngameInputHandler : MonoBehaviour
     [SerializeField] Image selectionImage;
     readonly List<UIItemApple> appleList = new List<UIItemApple>();
 
-    int prevListCount;
+    int mPrevListCount;
     Action<List<UIItemApple>> checkSum;
 
     // Update is called once per frame
@@ -42,7 +42,7 @@ public class IngameInputHandler : MonoBehaviour
             var pointB = startPos * trCanvas.localScale;
             var apples = Physics2D.OverlapAreaAll(pointA, pointB);
 
-            if (appleList.Count != prevListCount)
+            if (appleList.Count != mPrevListCount)
             {
                 appleList.RemoveAll(apple =>
                 {
@@ -50,7 +50,7 @@ public class IngameInputHandler : MonoBehaviour
                     return apple;
                 });
             }
-            prevListCount = appleList.Count;
+            mPrevListCount = appleList.Count;
             apples.ForEach(apple =>
             {
                 UIItemApple itemApple = null;
