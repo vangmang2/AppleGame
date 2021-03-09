@@ -34,4 +34,11 @@ public class StaticCanvas : MonoBehaviour
     {
         playTimeChecker.UseAppleToPlay();
     }
+
+#if UNITY_ANDROID
+    void Update()
+    {
+        InputHandler.HandleKeyboardInput(KeyCode.Escape, KeyInput.keyDown, Application.Quit);
+    }
+#endif
 }

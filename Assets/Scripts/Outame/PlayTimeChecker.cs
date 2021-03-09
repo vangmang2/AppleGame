@@ -99,10 +99,8 @@ public class PlayTimeChecker : MonoBehaviour
         txtTime.Set("--:--");
     }
 
-
     void OnApplicationQuit()
     {
-        //PlayerPrefs.DeleteAll();
         PlayerPrefs.SetString(SAVED_QUIT_TIME, DateTime.Now.ToString());
         PlayerPrefs.SetString(SAVED_REFILL_TIME, mCurrentApples == PLAY_AVALIABLE_MAX_TIME ? mRefillTime.ToString() : mCurrentRefillTime.ToString());
         PlayerPrefs.SetInt(SAVED_APPLE_COUNT, mCurrentApples);
