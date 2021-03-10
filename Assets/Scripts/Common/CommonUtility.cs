@@ -45,6 +45,35 @@ public static class CommonUtility
         }
     }
 
+    public static bool All<T>(this T[,] array, Func<T, bool> callback)
+    {
+        foreach (T element in array)
+        {
+            if (!callback(element))
+                return false;
+        }
+        return true;
+    }
+
+    public static int Count<T>(this T[,] array, Func<T, bool> callback)
+    {
+        int count = 0;
+        foreach(T element in array)
+        {
+            if (callback(element))
+                count++;
+        }
+        return count;
+    }
+
+    public static List<T> ToList<T>(this T[,] array)
+    {
+        var list = new List<T>();
+        foreach(T element in array)
+            list.Add(element);
+        return list;
+    }
+
     public static DateTime ParseToDateTime(this string target)
         => DateTime.Parse(target);
     public static TimeSpan ParseToTimeSpan(this string target)
