@@ -127,7 +127,6 @@ public class IngameLogic : MonoBehaviour
 
         aboutToFallAppleList.ForEach(apple =>
         {
-            var currentIndex = apple.index;
             var targetIndex = apple.index;
             targetIndex.y += yAxisLength;
             var targetPos = new Vector2(targetIndex.x + 0.5f, -targetIndex.y - 0.5f) * mSpace - offSet;

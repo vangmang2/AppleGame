@@ -64,11 +64,6 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
         this.index = index;
         return this;
     }
-    public UIItemApple SetSprite(Sprite sprite)
-    {
-        imageBg.SetSprite(sprite);
-        return this;
-    }
 
     public UIItemApple SetName(string name)
     {
@@ -80,18 +75,6 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     {
         this.number = number;
         txtNumber.Set(number);
-        return this;
-    }
-
-    public UIItemApple SetTextColor(Color color)
-    {
-        txtNumber.color = color;
-        return this;
-    }
-
-    public UIItemApple SetLocalPosition(Vector3 localPosition)
-    {
-        transform.localPosition = localPosition;
         return this;
     }
     
