@@ -20,11 +20,6 @@ public class PlayTimeChecker : MonoBehaviour
     readonly TimeSpan mRefillTime = new TimeSpan(0, 2, 0);
     TimeSpan mCurrentRefillTime;
 
-    void Start()
-    {
-        SetApplesInfo();
-    }
-
     private void SetApplesInfo()
     {
         var savedQuitTime = PlayerPrefs.GetString(SAVED_QUIT_TIME, DateTime.Now.ToString()).ParseToDateTime();
@@ -126,6 +121,5 @@ public class PlayTimeChecker : MonoBehaviour
             SetApplesInfo();
         }
     }
-
 #endif
 }
