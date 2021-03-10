@@ -49,7 +49,7 @@ public class PlayTimeChecker : MonoBehaviour
         {
             mCurrentRefillTime = mCurrentRefillTime.Subtract(timeGapFromQuit);
             var avaliableApplesCount = 0;
-            if (mCurrentRefillTime.TotalSeconds < 0)
+            while (mCurrentRefillTime.TotalSeconds < 0)
             {
                 mCurrentRefillTime = mCurrentRefillTime.Add(mRefillTime);
                 avaliableApplesCount++;
