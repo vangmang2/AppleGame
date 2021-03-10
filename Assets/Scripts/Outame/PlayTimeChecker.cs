@@ -22,6 +22,11 @@ public class PlayTimeChecker : MonoBehaviour
 
     void Start()
     {
+        SetApplesInfo();
+    }
+
+    private void SetApplesInfo()
+    {
         var savedQuitTime = PlayerPrefs.GetString(SAVED_QUIT_TIME, DateTime.Now.ToString()).ParseToDateTime();
         var savedRefillTime = PlayerPrefs.GetString(SAVED_REFILL_TIME, mRefillTime.ToString()).ParseToTimeSpan();
 
@@ -42,7 +47,7 @@ public class PlayTimeChecker : MonoBehaviour
         {
             mCurrentRefillTime = mCurrentRefillTime.Subtract(timeGapFromQuit);
             var avaliableApplesCount = 0;
-            if(mCurrentRefillTime.TotalSeconds < 0)
+            if (mCurrentRefillTime.TotalSeconds < 0)
             {
                 mCurrentRefillTime = mCurrentRefillTime.Add(mRefillTime);
                 avaliableApplesCount++;
@@ -105,4 +110,22 @@ public class PlayTimeChecker : MonoBehaviour
         PlayerPrefs.SetString(SAVED_REFILL_TIME, mCurrentApples == PLAY_AVALIABLE_MAX_TIME ? mRefillTime.ToString() : mCurrentRefillTime.ToString());
         PlayerPrefs.SetInt(SAVED_APPLE_COUNT, mCurrentApples);
     }
+
+#if UNITY_ANDROID
+    void OnApplicationPause(bool status)
+    {
+        if(status)
+        {
+            PlayerPrefs.SetString(SAVED_QUIT_TIME, DateTime.Now.ToString());
+            PlayerPrefs.SetString(SAVED_REFILL_TIME, mCurrentApples == PLAY_AVALIABLE_MAX_TIME ? mRefillTime.ToString() : mCurrentRefillTime.ToString());
+            PlayerPrefs.SetInt(SAVED_APPLE_COUNT, mCurrentApples);
+            StopAllCoroutines();
+        }
+        else
+        {
+            SetApplesInfo();
+        }
+    }
+
+#endif
 }

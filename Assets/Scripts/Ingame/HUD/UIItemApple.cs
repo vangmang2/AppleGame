@@ -29,7 +29,6 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
     [SerializeField] RectTransform rtBody;
     [SerializeField] Collider2D collider2D;
     [SerializeField] Image imageSelection;
-    [SerializeField] Image imageBg;
     [SerializeField] Text txtNumber;
 
     public GameObject getGameObject => gameObject;
