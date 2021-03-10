@@ -47,8 +47,8 @@ public class IngameLogic : MonoBehaviour
                 graphicRaycaster.enabled = false;
                 selectedAppleList.ForEach(apple =>
                 {
-                    apple.SetParent(trTerminatedApplesParent);
-                    apple.Terminate(() => applePool.Despawn(apple));
+                    apple.SetParent(trTerminatedApplesParent)
+                         .Terminate(() => applePool.Despawn(apple));
                 });
                 mScore += selectedAppleList.Count;
                 if (selectedAppleList.Count > 2)
