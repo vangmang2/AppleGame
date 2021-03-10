@@ -44,7 +44,7 @@ public class IngameLogic : MonoBehaviour
             int sum = selectedAppleList.Sum(apple => apple.number);
             if (sum == SATISFY_TOTAL_SUM)
             {
-                StartCoroutine(CoRaycastAfterHandleInput());
+                graphicRaycaster.enabled = false;
                 selectedAppleList.ForEach(apple =>
                 {
                     apple.SetParent(trTerminatedApplesParent);
@@ -56,21 +56,20 @@ public class IngameLogic : MonoBehaviour
                 txtScore.Set(mScore);
                 comboSystem.ActivateCombo();
                 // 중력 모드
-                ActivateGravityFall(selectedAppleList);
+                ActivateGravityFall(selectedAppleList, () =>
+                {
+                    CheckTotalAvaliable(() => 
+                    { 
+                        graphicRaycaster.enabled = true; 
+                    });
+                });
             }
         });
         GenerateApples();
     }
 
-    private IEnumerator CoRaycastAfterHandleInput()
-    {
-        graphicRaycaster.enabled = false;
-        yield return CommonUtility.GetYieldSec(UIItemApple.APPLE_MOVEMENT_TIME + 0.2f);
-        graphicRaycaster.enabled = true;
-    }
-
     readonly List<UIItemApple> aboutToFallAppleList = new List<UIItemApple>();
-    private void ActivateGravityFall(List<UIItemApple> terminatedApples)
+    private void ActivateGravityFall(List<UIItemApple> terminatedApples, Action finishCallback/*사과가 다 내려온 후에 검사 시작*/)
     {
         var orderedAppleList = terminatedApples.ToList();
         orderedAppleList.Sort((apple1, apple2) =>
@@ -138,6 +137,7 @@ public class IngameLogic : MonoBehaviour
             mAppleArray[targetIndex.x, targetIndex.y] = apple;
         });
         aboutToFallAppleList.Clear();
+        finishCallback();
     }
 
     private void GenerateApples()
@@ -161,7 +161,7 @@ public class IngameLogic : MonoBehaviour
         }
     }
 
-    public void Onclick_FindAvailableTotal()
+    private bool FindAvailableTotal(Action callback = null)
     {
         avaliableAppleList.Clear();
         for (int _y = 0; _y < y; _y++)
@@ -170,16 +170,17 @@ public class IngameLogic : MonoBehaviour
             {
                 if (SearchVertical(_x, _y))
                 {
-                    HighlightAvaliableApples();
-                    return;
+                    callback?.Invoke();
+                    return true;
                 }
                 if (SearchHorizontal(_x, _y))
                 {
-                    HighlightAvaliableApples();
-                    return;
+                    callback?.Invoke();
+                    return true;
                 }
             }
         }
+        return false;
 
         bool SearchVertical(int x, int y)
         {
@@ -238,6 +239,77 @@ public class IngameLogic : MonoBehaviour
             }
             return false;
         }
+    }
+
+    public void Onclick_FindAvailableTotal()
+    {
+        FindAvailableTotal(HighlightAvaliableApples);
+    }
+
+    public void CheckTotalAvaliable(Action finishCallback = null)
+    {
+        if (FindAvailableTotal())
+        {
+            StartCoroutine(CoWaitForAppleMovement(finishCallback));
+            return;
+        }
+        else
+        {
+            // 셔플 조건
+            // 1) 힌트찾기로 총합10이 가능한 사과 배열을 찾지 못한 경우
+            // 2) 사과들의 숫자가 전부 5 초과인 경우
+            // 1 -> 기존 사과들로 랜덤 섞기
+            // 2 -> 새로 숫자 생성 후 랜덤 섞기
+
+            StartCoroutine(CoApplesMoveToZero(() =>
+            {
+                var appleList = mAppleArray.ToList();
+                appleList.Shuffle();
+                int index = 0;
+                for (int _y = 0; _y < y; _y++)
+                {
+                    for (int _x = 0; _x < x; _x++)
+                    {
+                        var apple = appleList[index];
+                        bool isTotalSumInvalid = mAppleArray.All(_apple => _apple.number > 5) || mAppleArray.Count(_apple => _apple.number <= 5) <= 1;
+                        if (isTotalSumInvalid)
+                            apple.SetNumber(Random.Range(1, 10));
+                        mAppleArray[_x, _y] = apple.SetIndex(new Index(_x, _y));
+                        index++;
+                    }
+                }
+                StartCoroutine(CoApplesMoveToEachPos(() =>
+                {
+                    finishCallback?.Invoke();
+                    CheckTotalAvaliable(finishCallback);
+                }));
+            }));
+        }
+        IEnumerator CoApplesMoveToZero(Action callback = null)
+        {
+            foreach(var apple in mAppleArray)
+            {
+                apple.MoveToTarget(Vector2.zero);
+            }
+            yield return CommonUtility.GetYieldSec(UIItemApple.APPLE_SHUFFLE_MOVEMENT_TIME);
+            callback?.Invoke();
+        }
+        IEnumerator CoApplesMoveToEachPos(Action callback = null)
+        {
+            foreach (var apple in mAppleArray)
+            {
+                var index = apple.index;
+                var targetPos = new Vector2(index.x + 0.5f, -index.y - 0.5f) * mSpace - offSet;
+                apple.MoveToTarget(targetPos);                
+            }
+            yield return CommonUtility.GetYieldSec(UIItemApple.APPLE_SHUFFLE_MOVEMENT_TIME);
+            callback?.Invoke();
+        }
+    }
+    private IEnumerator CoWaitForAppleMovement(Action callback)
+    {
+        yield return CommonUtility.GetYieldSec(UIItemApple.APPLE_MOVEMENT_TIME + 0.05f);
+        callback?.Invoke();
     }
 
     Coroutine coroutine;

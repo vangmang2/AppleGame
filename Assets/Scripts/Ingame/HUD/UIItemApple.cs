@@ -24,6 +24,7 @@ public struct Index
 public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
 {
     public const float APPLE_MOVEMENT_TIME = 0.25f;
+    public const float APPLE_SHUFFLE_MOVEMENT_TIME = 1f;
 
     [SerializeField] RectTransform rtBody;
     [SerializeField] Collider2D collider2D;
@@ -130,18 +131,18 @@ public class UIItemApple : MonoBehaviour, IPoolable<UIItemApple>
         callback?.Invoke();
     }
 
-    public void MoveToTarget(Vector2 target)
+    public void MoveToTarget(Vector2 target, float movementSpeed = APPLE_MOVEMENT_TIME)
     {
-        StartCoroutine(CoMoveToTarget(target));
+        StartCoroutine(CoMoveToTarget(target, movementSpeed));
     }
 
-    private IEnumerator CoMoveToTarget(Vector2 target)
+    private IEnumerator CoMoveToTarget(Vector2 target, float movementSpeed)
     {
         var startPos = transform.localPosition;
         var t = 0f;
         while(t <= 1f)
         {
-            t += Time.deltaTime / APPLE_MOVEMENT_TIME;
+            t += Time.deltaTime / movementSpeed;
             transform.localPosition = Vector2.Lerp(startPos, target, t);
             yield return null;
         }
