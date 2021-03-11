@@ -167,6 +167,11 @@ public class IngameLogic : MonoBehaviour
         {
             for (int _x = 0; _x < x; _x++)
             {
+                if(Search2x2(_x, _y))
+                {
+                    callback?.Invoke();
+                    return true;
+                }
                 if (SearchVertical(_x, _y))
                 {
                     callback?.Invoke();
@@ -235,6 +240,28 @@ public class IngameLogic : MonoBehaviour
                 }
                 else if (sum > 10)
                     return false;
+            }
+            return false;
+        }
+
+        bool Search2x2(int x, int y)
+        {
+            int minX = 0;
+            int minY = 0;
+            if (x == minX || y == minY)
+                return false;
+            var apple1 = mAppleArray[x, y];
+            var apple2 = mAppleArray[x - 1, y];
+            var apple3 = mAppleArray[x, y - 1];
+            var apple4 = mAppleArray[x - 1, y - 1];
+            var sum = apple1.number + apple2.number + apple3.number + apple4.number;
+            if(sum == 10)
+            {
+                avaliableAppleList.Add(apple1);
+                avaliableAppleList.Add(apple2);
+                avaliableAppleList.Add(apple3);
+                avaliableAppleList.Add(apple4);
+                return true;
             }
             return false;
         }
@@ -319,20 +346,39 @@ public class IngameLogic : MonoBehaviour
             StopCoroutine(coroutine);
         coroutine = StartCoroutine(CoPlayHighlightHint());
 
-        var firstApple = avaliableAppleList[0];
-        var lastApple = avaliableAppleList[avaliableAppleList.Count - 1];
+        var orderedAppleList = avaliableAppleList;
+        orderedAppleList.Sort((apple1, apple2) =>
+        {
+            if (apple1.index.y < apple2.index.y)
+                return -1;
+            else if (apple1.index.y > apple2.index.y)
+                return 1;
+            else
+            {
+                if (apple1.index.x < apple2.index.x)
+                    return -1;
+                else
+                    return 1;
+            }
+        });
+        var firstApple = orderedAppleList[0];
+        var lastApple = orderedAppleList[orderedAppleList.Count - 1];
 
         int xAxisLength = Mathf.Abs(firstApple.index.x - lastApple.index.x) + 1;
         int yAxisLength = Mathf.Abs(firstApple.index.y - lastApple.index.y) + 1;
         bool isVertical = yAxisLength > 1;
+        bool isRectangle = xAxisLength > 1 && yAxisLength > 1;
 
         var centerPos = firstApple.getLocalPosition + lastApple.getLocalPosition;
         centerPos /= 2;
 
         int count = (isVertical ? yAxisLength : xAxisLength);
-        rtHint.sizeDelta = isVertical ?
-            new Vector2(mSpace, mSpace * count) :
-            new Vector2(mSpace * count, mSpace);
+        if(isRectangle)
+            rtHint.sizeDelta = new Vector2(mSpace, mSpace) * count;
+        else
+            rtHint.sizeDelta = isVertical ? 
+                new Vector2(mSpace, mSpace * count) : 
+                new Vector2(mSpace * count, mSpace);
         rtHint.anchoredPosition = centerPos;
         avaliableAppleList.Clear();
     }
